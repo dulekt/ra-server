@@ -3,6 +3,7 @@
 psql -U postgres  -d ra -f C:\Visual_code_projects\ra-server\database.sql
 \c ra => to connect to database
 \dt => to list all tables 
+testtest
 */
 
 CREATE DATABASE ra;
