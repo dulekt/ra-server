@@ -1,18 +1,33 @@
 //index.js
-const express = require("express");
+import express, { json } from "express";
 const app = express();
-const cors = require("cors");
-const pool = require("./db");
+import cors from "cors";
+import { query } from "./db";
 
 app.use(cors());
-app.use(express.json());
+app.use(json());
+
+function printToZebra(ipAddress, port, zpl) {
+  const net = require("net");
+  const client = new net.Socket();
+  console.log("Printed to Zebra");
+  client.connect(port, ipAddress, () => {
+    client.write(zpl);
+    client.destroy();
+  });
+}
+const ipAddress = "10.76.13.191";
+const port = 9100;
+const zpl =
+  "^XA^CF0,60^FO220,50^FD Javascript 3 ^FS^CF0,50^FO220,115^FD Test ^FS^XZ";
 
 /// ROUTES ///
 // add user
 app.post("/users", async (req, res) => {
+  printToZebra(ipAddress, port, zpl);
   try {
     const { username, name, surname } = req.body;
-    const newUser = await pool.query(
+    const newUser = await query(
       "INSERT INTO ra_users (username, name, surname) VALUES ($1, $2, $3) RETURNING *",
       [username, name, surname]
     );

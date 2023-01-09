@@ -15,6 +15,13 @@ CREATE TABLE  ra_users (
     surname VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE printers (
+    printerID SERIAL PRIMARY KEY,
+    printerName VARCHAR(50) NOT NULL,
+    printerIP VARCHAR(50) NOT NULL,
+    printerPort VARCHAR(50) NOT NULL,
+    printerDPI INTEGER NOT NULL
+)
 
 CREATE TABLE   ra_labels (
 /*      examples:
