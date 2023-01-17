@@ -1,8 +1,9 @@
 //index.js
-import express, { json } from "express";
+const express = require("express");
+const json = require("body-parser").json;
 const app = express();
-import cors from "cors";
-import { query } from "./db";
+const cors = require("cors");
+const { query } = require("./db");
 
 app.use(cors());
 app.use(json());
@@ -16,15 +17,36 @@ function printToZebra(ipAddress, port, zpl) {
     client.destroy();
   });
 }
-const ipAddress = "10.76.13.191";
+const ipAddress = "10.76.18.71";
 const port = 9100;
 const zpl =
   "^XA^CF0,60^FO220,50^FD Javascript 3 ^FS^CF0,50^FO220,115^FD Test ^FS^XZ";
 
 /// ROUTES ///
+//get all orders from orders table
+app.get("/orders", async (req, res) => {
+  try {
+    const allOrders = await query("SELECT * FROM ra_orders");
+    res.json(allOrders.rows);
+  } catch (err) {
+    console.error("Error: ", err.message);
+  }
+});
+
+//get all users
+
+app.get("/users", async (req, res) => {
+  try {
+    const allUsers = await query("SELECT * FROM ra_users");
+    res.json(allUsers.rows);
+  } catch (err) {
+    console.error("Error: ", err.message);
+  }
+});
+
 // add user
 app.post("/users", async (req, res) => {
-  printToZebra(ipAddress, port, zpl);
+  //printToZebra(ipAddress, port, zpl); /*works*/
   try {
     const { username, name, surname } = req.body;
     const newUser = await query(
@@ -38,8 +60,6 @@ app.post("/users", async (req, res) => {
 });
 
 //remove user
-
-//get all users
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");

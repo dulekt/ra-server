@@ -1,8 +1,10 @@
-/*database.sql
+/*
+database.sql
 (psql -h hostname -d databasename -U username -f filepath.sql)
 psql -U postgres  -d ra -f C:\Visual_code_projects\ra-server\database.sql
 \c ra => to connect to database
 \dt => to list all tables 
+\d table_name => to list table structure
 testtest
 */
 
@@ -12,7 +14,21 @@ CREATE TABLE  ra_users (
     userID SERIAL PRIMARY KEY,
     username VARCHAR(10) NOT NULL,
     name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL
+    surname VARCHAR(50) NOT NULL,
+);
+
+CREATE TABLE orders (
+    "id" text NOT NULL,
+    "isPrinted" boolean NOT NULL DEFAULT false, 
+    "datetime" timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "categoy" text,
+    "description" text,
+    "label_type" text,
+    "number" smallint,
+    "type" text,
+    "username" text,
+    "content" jsonb,
+    CONSTRAINT "orders_pkey" PRIMARY KEY ("id"),
 );
 
 CREATE TABLE printers (
@@ -20,8 +36,8 @@ CREATE TABLE printers (
     printerName VARCHAR(50) NOT NULL,
     printerIP VARCHAR(50) NOT NULL,
     printerPort VARCHAR(50) NOT NULL,
-    printerDPI INTEGER NOT NULL
-)
+    printerDPI INTEGER NOT NULL,
+);
 
 CREATE TABLE   ra_labels (
 /*      examples:
@@ -34,7 +50,8 @@ labelID | label   | label_description |font_size|max_length
     label VARCHAR(25) NOT NULL,
     label_description VARCHAR(100),
     font_size INTEGER NOT NULL,
-    max_length INTEGER NOT NULL
+    max_length INTEGER NOT NULL,
+    labels_in_row INTEGER NOT NULL,
 );
 
 CREATE TABLE  ra_plastic_marks (
@@ -46,5 +63,5 @@ CREATE TABLE  ra_plastic_marks (
     markID SERIAL PRIMARY KEY,
     mark VARCHAR(25) NOT NULL,
     mark_description VARCHAR(100),
-    max_length INTEGER NOT NULL
+    max_length INTEGER NOT NULL,
 );
