@@ -18,7 +18,7 @@ CREATE TABLE  ra_users (
 );
 
 CREATE TABLE orders (
-    "id" text NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "isPrinted" boolean NOT NULL DEFAULT false, 
     "datetime" timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "category" text,
@@ -27,8 +27,8 @@ CREATE TABLE orders (
     "orderNumber" text,
     "orderType" text,
     "user" text,
-    "content" jsonb,
-    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+    "content" jsonb
+
 );
 
 CREATE TABLE printers (
