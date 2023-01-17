@@ -23,11 +23,33 @@ const zpl =
   "^XA^CF0,60^FO220,50^FD Javascript 3 ^FS^CF0,50^FO220,115^FD Test ^FS^XZ";
 
 /// ROUTES ///
+
 //get all orders from orders table
 app.get("/orders", async (req, res) => {
   try {
     const allOrders = await query("SELECT * FROM ra_orders");
     res.json(allOrders.rows);
+  } catch (err) {
+    console.error("Error: ", err.message);
+  }
+});
+//add order to orders table
+app.post("/orders", async (req, res) => {
+  try {
+    const {
+      user,
+      orderNumber,
+      orderType,
+      labelType,
+      category,
+      description,
+      content,
+    } = req.body;
+    const newOrder = await query(
+      "INSERT INTO orders (category,description,labelType,orderNumber,orderType,user,content) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [category, description, labelType, orderNumber, orderType, user, content]
+    );
+    res.json(newOrder.rows[0]);
   } catch (err) {
     console.error("Error: ", err.message);
   }

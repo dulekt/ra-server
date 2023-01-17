@@ -11,32 +11,32 @@ testtest
 CREATE DATABASE ra;
 
 CREATE TABLE  ra_users (
-    userID SERIAL PRIMARY KEY,
-    username VARCHAR(10) NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL,
+    "userID" SERIAL PRIMARY KEY,
+    "username" VARCHAR(10) NOT NULL,
+    "name" VARCHAR(50) NOT NULL,
+    "surname" VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE orders (
     "id" text NOT NULL,
     "isPrinted" boolean NOT NULL DEFAULT false, 
     "datetime" timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "categoy" text,
+    "category" text,
     "description" text,
-    "label_type" text,
-    "number" smallint,
-    "type" text,
-    "username" text,
+    "labelType" text,
+    "orderNumber" text,
+    "orderType" text,
+    "user" text,
     "content" jsonb,
-    CONSTRAINT "orders_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE printers (
-    printerID SERIAL PRIMARY KEY,
-    printerName VARCHAR(50) NOT NULL,
-    printerIP VARCHAR(50) NOT NULL,
-    printerPort VARCHAR(50) NOT NULL,
-    printerDPI INTEGER NOT NULL,
+    "printerID" SERIAL PRIMARY KEY,
+    "printerName" VARCHAR(50) NOT NULL,
+    "printerIP" VARCHAR(50) NOT NULL,
+    "printerPort" VARCHAR(50) NOT NULL,
+    "printerDPI" INTEGER NOT NULL
 );
 
 CREATE TABLE   ra_labels (
@@ -46,12 +46,12 @@ labelID | label   | label_description |font_size|max_length
 2 |  T9957-012    |  devices          |    10   |      10
 3 |  T9957-018    |  smaller          |    10   |      10
 */
-    labelID SERIAL PRIMARY KEY,
-    label VARCHAR(25) NOT NULL,
-    label_description VARCHAR(100),
-    font_size INTEGER NOT NULL,
-    max_length INTEGER NOT NULL,
-    labels_in_row INTEGER NOT NULL,
+    "labelID" SERIAL PRIMARY KEY,
+    "label" VARCHAR(25) NOT NULL,
+    "label_description" VARCHAR(100),
+    "font_size" INTEGER NOT NULL,
+    "max_length" INTEGER NOT NULL,
+    "labels_in_row" INTEGER NOT NULL
 );
 
 CREATE TABLE  ra_plastic_marks (
@@ -60,8 +60,8 @@ CREATE TABLE  ra_plastic_marks (
 2 | 30 | terminals MCC    | 10
 3 | 34 | terminals P6000  | 10
 */
-    markID SERIAL PRIMARY KEY,
-    mark VARCHAR(25) NOT NULL,
-    mark_description VARCHAR(100),
-    max_length INTEGER NOT NULL,
+    "markID" SERIAL PRIMARY KEY,
+    "mark" VARCHAR(25) NOT NULL,
+    "mark_description" VARCHAR(100),
+    "max_length" INTEGER NOT NULL
 );
