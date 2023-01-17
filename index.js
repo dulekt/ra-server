@@ -68,7 +68,7 @@ app.get("/users", async (req, res) => {
 
 // add user
 app.post("/users", async (req, res) => {
-  //printToZebra(ipAddress, port, zpl); /*works*/
+  //printToZebra(ipAddress, port, zpl);
   try {
     const { username, name, surname } = req.body;
     const newUser = await query(

@@ -27,7 +27,7 @@ CREATE TABLE orders (
     "orderNumber" text,
     "orderType" text,
     "user" text,
-    "content" jsonb
+    "content" text []
 
 );
 
