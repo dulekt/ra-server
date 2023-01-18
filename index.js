@@ -27,7 +27,7 @@ const zpl =
 //get all orders from orders table
 app.get("/orders", async (req, res) => {
   try {
-    const allOrders = await query("SELECT * FROM ra_orders");
+    const allOrders = await query("SELECT * FROM orders");
     res.json(allOrders.rows);
   } catch (err) {
     console.error("Error: ", err.message);
@@ -37,21 +37,30 @@ app.get("/orders", async (req, res) => {
 app.post("/orders", async (req, res) => {
   try {
     const {
-      user,
-      orderNumber,
-      orderType,
-      labelType,
       category,
       description,
+      labelType,
+      orderNumber,
+      orderType,
+      user,
       content,
     } = req.body;
-    const newOrder = await query(
-      "INSERT INTO orders (category,description,labelType,orderNumber,orderType,user,content) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-      [category, description, labelType, orderNumber, orderType, user, content]
-    );
+    const text =
+      'INSERT INTO orders ("category", "description", "labelType", "order_number", "order_type", "user", "content")' +
+      " VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;";
+    const values = [
+      category,
+      description,
+      labelType,
+      orderNumber,
+      orderType,
+      user,
+      content,
+    ];
+    const newOrder = await query(text, values);
     res.json(newOrder.rows[0]);
   } catch (err) {
-    console.error("Error: ", err.message);
+    console.error(err.stack);
   }
 });
 

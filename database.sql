@@ -24,8 +24,8 @@ CREATE TABLE orders (
     "category" text,
     "description" text,
     "labelType" text,
-    "orderNumber" text,
-    "orderType" text,
+    "order_number" text,
+    "order_type" text,
     "user" text,
     "content" text []
 
