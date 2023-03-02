@@ -39,27 +39,21 @@ CREATE TABLE orders (
 
 /* POST/GET/DELETE done*/ 
 CREATE TABLE   ra_labels (
-/*      examples:
-labelID | label   | label_description |font_size|max_length
-1 |  800006-26-04 |  podstawowa       |    10   |      10
-2 |  T9957-012    |  devices          |    10   |      10
-*/
+
     "labelID" SERIAL PRIMARY KEY,
     "label" VARCHAR(25) NOT NULL,
-    "label_description" VARCHAR(100),
+    "label_width" float NOT NULL,
+    "label_height" float NOT NULL,
+    "ribbon_width" float NOT NULL,
+    "label_x0" float NOT NULL,
     "font_size" INTEGER NOT NULL,
-    "max_length" INTEGER NOT NULL,
     "labels_in_row" INTEGER NOT NULL,
-    "print_cell_printer" text[],
-    "workcenter_printers" text[]
+    "print_cell_printer" VARCHAR(50) NOT NULL,
+    "lines_of_text" INTEGER DEFAULT 1 NOT NULL
+
 );
 /* POST/GET/DELETE done*/
 CREATE TABLE  ra_plastic_marks (
-/*      examples:
-1 |  1 |  sleeve tag      | 10
-2 | 30 | terminals MCC    | 10
-3 | 34 | terminals P6000  | 10
-*/
     "markID" SERIAL PRIMARY KEY,
     "mark" VARCHAR(25) NOT NULL,
     "mark_description" VARCHAR(100),

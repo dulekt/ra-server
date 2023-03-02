@@ -4,9 +4,12 @@ const json = require("body-parser").json;
 const app = express();
 const cors = require("cors");
 const { query } = require("./db");
+const helmet = require("helmet");
+const { printOrder } = require("./tools");
 
 app.use(cors());
 app.use(json());
+app.use(helmet());
 
 function printToZebra(ipAddress, port, zpl) {
   const net = require("net");
@@ -164,39 +167,46 @@ app.post("/labels", async (req, res) => {
   try {
     const {
       label,
-      label_description,
+      label_width,
+      label_height,
+      ribbon_width,
+      label_x0,
       font_size,
-      max_length,
       labels_in_row,
-      suported_printers,
+      print_cell_printer,
+      lines_of_text,
     } = req.body;
     const newLabel = await query(
-      'INSERT INTO ra_labels ("label", "label_description", "font_size", "max_length", "labels_in_row", "suported_printers") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      'INSERT INTO ra_labels ("label", "label_width", "label_height", "ribbon_width", "label_x0", "font_size", "labels_in_row", "print_cell_printer", "lines_of_text") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
       [
         label,
-        label_description,
+        label_width,
+        label_height,
+        ribbon_width,
+        label_x0,
         font_size,
-        max_length,
         labels_in_row,
-        suported_printers,
+        print_cell_printer,
+        lines_of_text,
       ]
     );
+
     res.json(newLabel.rows[0]);
   } catch (err) {
     console.error("Error: ", err.message);
   }
 });
 //delete label
-app.delete("/labels/:id", async (req, res) => {
+app.delete("/labels/:labelID", async (req, res) => {
   try {
     const { labelID } = req.params;
     const deleteLabel = await query(
-      'DELETE FROM ra_labels WHERE "labelID" = $1',
+      'DELETE FROM "ra_labels" WHERE "labelID" = $1',
       [labelID]
     );
     res.json("Label was deleted");
   } catch (err) {
-    console.error("Error: ", err.message);
+    console.error("Server Error: ", err.message);
   }
 });
 
@@ -206,7 +216,7 @@ app.get("/plasticmarks", async (req, res) => {
     const allPlasticMarks = await query("SELECT * FROM ra_plastic_marks");
     res.json(allPlasticMarks.rows);
   } catch (err) {
-    console.error("Error: ", err.message);
+    console.error("Server Error: ", err.message);
   }
 });
 //add plastic mark
@@ -258,6 +268,20 @@ app.post("/workcenters", async (req, res) => {
     console.error("Error: ", err.message);
   }
 });
+//get printable labels for workcenter
+app.get("/workcenters/:workcenter", async (req, res) => {
+  try {
+    const { workcenter } = req.params;
+    const printableLabels = await query(
+      'SELECT "printableLabels" FROM ra_workcenters WHERE "workcenter" = $1',
+      [workcenter]
+    );
+    res.json(printableLabels.rows[0].printableLabels);
+  } catch (err) {
+    console.error("Error: ", err.message);
+  }
+});
+
 //delete workcenter
 app.delete("/workcenters/:id", async (req, res) => {
   try {
@@ -273,19 +297,11 @@ app.delete("/workcenters/:id", async (req, res) => {
 });
 
 //post route to print
-app.get("/print_cell/:id", async (req, res) => {
+app.post("/print_cell/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const print = await query("SELECT * FROM orders WHERE id = $1", [id]);
-    console.log(print.rows[0]);
-    const { labelType, orderType, content } = print.rows[0];
-    const printers = await query(
-      "SELECT print_cell_printer FROM ra_labels WHERE label = $1",
-      [labelType]
-    );
-    const suported_printers = printers.rows[0];
-
-    res.json(suported_printers);
+    printOrder(id);
+    res.json("Printed");
   } catch (err) {
     console.error("Error: ", err.message);
   }
