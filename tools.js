@@ -1,19 +1,18 @@
 const express = require("express");
-const json = require("body-parser").json;
-const app = express();
-const cors = require("cors");
 const { query } = require("./db");
-const helmet = require("helmet");
+const net = require("net");
+const client = new net.Socket();
 
 async function printOrder(id) {
   const { labelType, order_type, content } = await fetchOrder(id);
 
   const printer = await getPrinterCellPrinter(labelType);
-  console.log(printer);
+  console.log("printer", printer);
   const printerData = await query(
     'SELECT * FROM printers WHERE "printerName" = $1',
     [printer]
   );
+  console.log("printerData: ", printerData.rows[0]);
   const ipAddress = printerData.rows[0].printerIP;
   const port = printerData.rows[0].printerPort;
   const DPI = printerData.rows[0].printerDPI;
@@ -22,7 +21,6 @@ async function printOrder(id) {
     labelType,
   ]);
   const listOfLabels = content;
-
   const labelWidth = labelData.rows[0].label_width;
   const labelHeight = labelData.rows[0].label_height;
   const ribbonWidth = labelData.rows[0].ribbon_width;
@@ -42,26 +40,29 @@ async function printOrder(id) {
     x_0,
     linesOfText
   );
-  console.log(zpl);
-  console.log("IP: ", ipAddress);
-  console.log("Port: ", port);
 
   const updateOrder = await query(
     'UPDATE orders SET "isPrinted" = true WHERE id = $1',
     [id]
   );
+
+  printToZebra(ipAddress, port, zpl);
 }
 
-function printToZebra(ipAddress, port, zpl) {
-  /*
-      const net = require("net");
-      const client = new net.Socket();
-      console.log("Printed to Zebra");
-      client.connect(port, ipAddress, () => {
-        client.write(zpl);
-        client.destroy();
-      });*/
+function printToZebra(ipAddress, port = 9100, zpl) {
+  console.log(":::::Trying to print:::::");
   console.log(zpl);
+  console.log("IP: ", ipAddress);
+  console.log("Port: ", port);
+  console.log("::::::::::");
+
+  client.connect(port, "10.76.13.150", () => {
+    console.log("Connected to printer");
+    client.write(zpl);
+    console.log("Printed");
+    client.destroy();
+    console.log("Disconnected");
+  });
 }
 
 module.exports = {
@@ -76,9 +77,11 @@ async function fetchOrder(id) {
 }
 
 async function getPrinterCellPrinter(labelType) {
+  console.log("labelType", labelType);
   const printer = await query("SELECT * FROM ra_labels WHERE label = $1", [
     labelType,
   ]);
+
   return printer.rows[0].print_cell_printer;
 }
 
@@ -121,8 +124,22 @@ function preparePrintPayload(listOfLabels) {
             25
           )} ${labelStart} ${label} ${labelEnd}`;
         }
-      )}`
+      )}${endLabelDefinition}\n`
   );
 
   return ` ${allLabels} ${mode(cut)} ${endLabelDefinition}`;
 }
+//! Error
+/*Server is running on port 5000
+labelType 80006-269-04
+Zebra
+undefined
+C:\Visual_code_projects\ra-server\tools.js:15
+  const ipAddress = printerData.rows[0].printerIP;
+                                        ^
+
+TypeError: Cannot read properties of undefined (reading 'printerIP')
+    at printOrder (C:\Visual_code_projects\ra-server\tools.js:15:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+Node.js v18.12.0*/
