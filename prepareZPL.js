@@ -45,7 +45,7 @@ linesOfText = 1;
 x_0 = 6;
 x_n = 3;
 
-function preparePrintPayload(
+function prepareZPL(
   listOfLabels,
   ribbonWidth,
   labelWidth,
@@ -92,7 +92,7 @@ function preparePrintPayload(
             x_0 + (index * (ribbonWidthInDots - x_0 - x_n)) / labelsInRow
           ); // x position of label
 
-          const y = Math.round((labelHeightInDots - fontSizeInDots) / 2); // y position of label
+          const y = Math.round((labelHeightInDots - fontSizeInDots) / 4); // y position of label
           console.log(index, x, y);
           return `\n^FO${x},${y} ^FB${labelWidthInDots},${linesOfText},0,C\n^FD${label}\\&^FS`;
         })

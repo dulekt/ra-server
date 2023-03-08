@@ -12,7 +12,8 @@ async function printOrder(id) {
     'SELECT * FROM printers WHERE "printerName" = $1',
     [printer]
   );
-  console.log("printerData: ", printerData.rows[0]);
+  console.log("printerDataxx", printerData.rows[0]);
+
   const ipAddress = printerData.rows[0].printerIP;
   const port = printerData.rows[0].printerPort;
   const DPI = printerData.rows[0].printerDPI;
@@ -28,8 +29,27 @@ async function printOrder(id) {
   const x_0 = labelData.rows[0].label_x0;
   const labelsInRow = labelData.rows[0].labels_in_row;
   const linesOfText = labelData.rows[0].lines_of_text;
-
-  const zpl = preparePrintPayload(
+  console.log(
+    "linesOfText",
+    linesOfText,
+    "\nlabelsInRow",
+    labelsInRow,
+    "\nlabelWidth",
+    labelWidth,
+    "\nlabelHeight",
+    labelHeight,
+    "\nribbonWidth",
+    ribbonWidth,
+    "\nfontSize",
+    fontSize,
+    "\nDPI",
+    DPI,
+    "\nx_0",
+    x_0,
+    "\nlistOfLabels",
+    listOfLabels
+  );
+  const zpl = prepareZPL(
     listOfLabels,
     ribbonWidth,
     labelWidth,
@@ -50,18 +70,12 @@ async function printOrder(id) {
 }
 
 function printToZebra(ipAddress, port = 9100, zpl) {
-  console.log(":::::Trying to print:::::");
   console.log(zpl);
-  console.log("IP: ", ipAddress);
-  console.log("Port: ", port);
-  console.log("::::::::::");
 
   client.connect(port, "10.76.13.150", () => {
-    console.log("Connected to printer");
     client.write(zpl);
-    console.log("Printed");
+
     client.destroy();
-    console.log("Disconnected");
   });
 }
 
@@ -77,11 +91,11 @@ async function fetchOrder(id) {
 }
 
 async function getPrinterCellPrinter(labelType) {
-  console.log("labelType", labelType);
+  //  console.log("labelType", labelType);
   const printer = await query("SELECT * FROM ra_labels WHERE label = $1", [
     labelType,
   ]);
-
+  //console.log("getPrinterCellPrinter", printer.rows[0].print_cell_printer);
   return printer.rows[0].print_cell_printer;
 }
 
@@ -129,17 +143,60 @@ function preparePrintPayload(listOfLabels) {
 
   return ` ${allLabels} ${mode(cut)} ${endLabelDefinition}`;
 }
-//! Error
-/*Server is running on port 5000
-labelType 80006-269-04
-Zebra
-undefined
-C:\Visual_code_projects\ra-server\tools.js:15
-  const ipAddress = printerData.rows[0].printerIP;
-                                        ^
+function prepareZPL(
+  listOfLabels,
+  ribbonWidth,
+  labelWidth,
+  labelHeight,
+  DPI = 203,
+  fontSize = 12,
+  labelsInRow = 1,
+  x_0 = 0,
+  x_n = 0,
+  linesOfText = 1
+) {
+  //console log parameteres
+  const ribbonWidthInDots = Math.round((ribbonWidth * DPI) / 25.4);
+  x_0 = Math.round((x_0 * DPI) / 25.4);
+  x_n = Math.round((x_n * DPI) / 25.4);
+  console.log("x_0, x_n: ", x_0, x_n);
+  const beginLabelDefinition = "\n^XA";
+  const endLabelDefinition = " ^XZ";
+  const mode = "\n^XA\n^MMC\n^XZ";
+  const labelWidthInDots = Math.round((labelWidth * DPI) / 25.4);
+  const labelHeightInDots = Math.round((labelHeight * DPI) / 25.4);
 
-TypeError: Cannot read properties of undefined (reading 'printerIP')
-    at printOrder (C:\Visual_code_projects\ra-server\tools.js:15:41)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+  //?const fontSizeInDots = Math.round((fontSize * DPI) / 72);
+  const fontSizeInDots = Math.round((fontSize * DPI) / 96);
 
-Node.js v18.12.0*/
+  const fontZPL = "\n^CF0," + fontSizeInDots;
+  //?  x position of 1. label left edge
+  //const x0 = ribbonWidthInDots / (labelsInRow * 2) - labelWidthInDots / 2;
+
+  // labels divided in groups of n where n is number of labels in row
+  const groupedLabels = listOfLabels.reduce((acc, item, index, array) => {
+    if (index % labelsInRow === 0) {
+      acc.push(array.slice(index, index + labelsInRow));
+    }
+    return acc;
+  }, []);
+
+  const labelsZPL = groupedLabels.map(
+    (group) =>
+      beginLabelDefinition +
+      group
+        .map((label, index) => {
+          const x = Math.round(
+            x_0 + (index * (ribbonWidthInDots - x_0 - x_n)) / labelsInRow
+          ); // x position of label
+
+          const y = Math.round((labelHeightInDots - fontSizeInDots) / 4); // y position of label
+          console.log("index,x,y  ", index, x, y);
+          return `\n^FO${x},${y} ^FB${labelWidthInDots},${linesOfText},0,C\n^FD${label}\\&^FS`;
+        })
+        .join("") +
+      endLabelDefinition
+  );
+
+  return beginLabelDefinition + fontZPL + labelsZPL + mode;
+}
