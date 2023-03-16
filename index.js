@@ -1,4 +1,4 @@
-//index.js
+//  index.js
 const express = require("express");
 const json = require("body-parser").json;
 const app = express();
@@ -11,32 +11,23 @@ app.use(cors());
 app.use(json());
 app.use(helmet());
 
-function printToZebra(ipAddress, port, zpl) {
-  const net = require("net");
-  const client = new net.Socket();
-  console.log("Printed to Zebra");
-  client.connect(port, ipAddress, () => {
-    client.write(zpl);
-    client.destroy();
-  });
-}
-const ipAddress = "10.76.18.71";
-const port = 9100;
-const zpl =
-  "^XA^CF0,60^FO220,50^FD Javascript 3 ^FS^CF0,50^FO220,115^FD Test ^FS^XZ";
-
 /// ROUTES ///
 
-//get all orders from orders table
+//  get all orders from orders table
 app.get("/orders", async (req, res) => {
   try {
     const allOrders = await query("SELECT * FROM orders");
-    res.json(allOrders.rows);
+    if (allOrders.rowCount > 0) {
+      res.status(200).json(allOrders.rows);
+    } else {
+      res.status(404).json("No orders found");
+    }
   } catch (err) {
     console.error("Error: ", err.message);
   }
 });
-//add order to orders table
+
+//  add order to orders table
 app.post("/orders", async (req, res) => {
   try {
     const {
@@ -66,23 +57,29 @@ app.post("/orders", async (req, res) => {
     res.json(newOrder.rows[0]);
   } catch (err) {
     console.error(err.stack);
+    res.status(500).json("Error: " + err.message);
   }
 });
 
-//get all users
+//  get all users
 
 app.get("/users", async (req, res) => {
   try {
     const allUsers = await query("SELECT * FROM ra_users");
-    res.json(allUsers.rows);
+    if (allUsers.rowCount > 0) {
+      res.status(200).json(allUsers.rows);
+    } else {
+      res.status(404).json("No users found");
+    }
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
 
 // add user
 app.post("/users", async (req, res) => {
-  //printToZebra(ipAddress, port, zpl);
+  //  printToZebra(ipAddress, port, zpl);
   try {
     const { username, name, surname } = req.body;
     const newUser = await query(
@@ -92,13 +89,14 @@ app.post("/users", async (req, res) => {
     res.json(newUser.rows[0]);
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
-//delete user
+//  delete user
 app.delete("/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    //console log the usernam of the user that is being deleted
+    //  console log the usernam of the user that is being deleted
 
     const deleteUser = await query('DELETE FROM ra_users WHERE "userID" = $1', [
       id,
@@ -107,18 +105,22 @@ app.delete("/users/:id", async (req, res) => {
     res.json(allUsers.rows);
   } catch (err) {
     console.error("Error: ", err.stack);
+    res.status(500).json("Error: " + err.message);
   }
 });
-//get all printers
+//  get all printers
 app.get("/printers", async (req, res) => {
   try {
     const allPrinters = await query("SELECT * FROM printers");
-    res.json(allPrinters.rows);
+    if (allPrinters.rowCount > 0) {
+      res.status(200).json(allPrinters.rows);
+    }
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
-//add printer
+//  add printer
 app.post("/printers", async (req, res) => {
   try {
     const { printerName, printerIP, printerPort, printerDPI, workcenter } =
@@ -130,9 +132,10 @@ app.post("/printers", async (req, res) => {
     res.json(newPrinter.rows[0]);
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
-//delete printer
+//  delete printer
 app.delete("/printers/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -149,20 +152,27 @@ app.delete("/printers/:id", async (req, res) => {
     res.json("Printer was deleted");
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
 
-//get all labels
+//  get all labels
 app.get("/labels", async (req, res) => {
   try {
     const allLabels = await query("SELECT * FROM ra_labels");
-    res.json(allLabels.rows);
+    if (allLabels.rowCount > 0) {
+      res.status(200).json(allLabels.rows);
+    } else {
+      res.status(404).json("No labels found");
+    }
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
-//update
-//add label
+
+//  update
+//  add label
 app.post("/labels", async (req, res) => {
   try {
     const {
@@ -194,9 +204,10 @@ app.post("/labels", async (req, res) => {
     res.json(newLabel.rows[0]);
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
-//delete label
+//  delete label
 app.delete("/labels/:labelID", async (req, res) => {
   try {
     const { labelID } = req.params;
@@ -207,19 +218,26 @@ app.delete("/labels/:labelID", async (req, res) => {
     res.json("Label was deleted");
   } catch (err) {
     console.error("Server Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
 
-//get plastic marks
+//  get plastic marks
 app.get("/plasticmarks", async (req, res) => {
   try {
     const allPlasticMarks = await query("SELECT * FROM ra_plastic_marks");
-    res.json(allPlasticMarks.rows);
+    if (allPlasticMarks.rowCount > 0) {
+      res.status(200).json(allPlasticMarks.rows);
+    } else {
+      res.status(404).json("No plastic marks found");
+    }
   } catch (err) {
-    console.error("Server Error: ", err.message);
+    console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
-//add plastic mark
+
+//  add plastic mark
 app.post("/plasticmarks", async (req, res) => {
   try {
     const { mark, mark_description, max_length } = req.body;
@@ -230,9 +248,10 @@ app.post("/plasticmarks", async (req, res) => {
     res.json(newPlasticMark.rows[0]);
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
-//delete plastic mark
+//  delete plastic mark
 app.delete("/plasticmarks/:id", async (req, res) => {
   try {
     const { markID } = req.params;
@@ -243,6 +262,7 @@ app.delete("/plasticmarks/:id", async (req, res) => {
     res.json("Plastic mark was deleted");
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
 
@@ -250,11 +270,17 @@ app.delete("/plasticmarks/:id", async (req, res) => {
 app.get("/workcenters", async (req, res) => {
   try {
     const allWorkcenters = await query("SELECT * FROM ra_workcenters");
-    res.json(allWorkcenters.rows);
+    if (allWorkcenters.rowCount > 0) {
+      res.status(200).json(allWorkcenters.rows);
+    } else {
+      res.status(404).json("No workcenters found");
+    }
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
+
 //add workcenter
 app.post("/workcenters", async (req, res) => {
   try {
@@ -266,6 +292,7 @@ app.post("/workcenters", async (req, res) => {
     res.json(newWorkcenter.rows[0]);
   } catch (err) {
     console.error("Error: ", err.message);
+    res.status(500).json("Error: " + err.message);
   }
 });
 //get printable labels for workcenter
@@ -276,7 +303,11 @@ app.get("/workcenters/:workcenter", async (req, res) => {
       'SELECT "printableLabels" FROM ra_workcenters WHERE "workcenter" = $1',
       [workcenter]
     );
-    res.json(printableLabels.rows[0].printableLabels);
+    if (printableLabels.rowCount > 0) {
+      res.json(printableLabels.rows[0].printableLabels);
+    } else {
+      res.status(404).json("No printable labels found");
+    }
   } catch (err) {
     console.error("Error: ", err.message);
   }
