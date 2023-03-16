@@ -69,6 +69,7 @@ app.get("/users", async (req, res) => {
     if (allUsers.rowCount > 0) {
       res.status(200).json(allUsers.rows);
     } else {
+      
       res.status(404).json("No users found");
     }
   } catch (err) {
