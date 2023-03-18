@@ -1,12 +1,11 @@
 //  index.js
 const express = require("express");
 const json = require("body-parser").json;
-const app = express();
-const cors = require("cors");
+const cors = require("cors");const helmet = require("helmet");
 const { query } = require("./db");
-const helmet = require("helmet");
-const { printOrder } = require("./tools");
 
+const { printOrder } = require("./tools");
+const app = express();
 app.use(cors());
 app.use(json());
 app.use(helmet());
@@ -15,7 +14,12 @@ app.use(helmet());
 
 //  get all orders from orders table
 app.get("/orders", async (req, res) => {
+
+
+
+
   try {
+    console.log("get all orders");
     const allOrders = await query("SELECT * FROM orders");
     if (allOrders.rowCount > 0) {
       res.status(200).json(allOrders.rows);
@@ -65,11 +69,12 @@ app.post("/orders", async (req, res) => {
 
 app.get("/users", async (req, res) => {
   try {
+    console.log("get all users");
     const allUsers = await query("SELECT * FROM ra_users");
     if (allUsers.rowCount > 0) {
       res.status(200).json(allUsers.rows);
     } else {
-      
+
       res.status(404).json("No users found");
     }
   } catch (err) {
@@ -160,6 +165,7 @@ app.delete("/printers/:id", async (req, res) => {
 //  get all labels
 app.get("/labels", async (req, res) => {
   try {
+    console.log("get all labels");
     const allLabels = await query("SELECT * FROM ra_labels");
     if (allLabels.rowCount > 0) {
       res.status(200).json(allLabels.rows);
@@ -269,10 +275,13 @@ app.delete("/plasticmarks/:id", async (req, res) => {
 
 //get all workcenters
 app.get("/workcenters", async (req, res) => {
+  console.log("get all workcenters");
   try {
     const allWorkcenters = await query("SELECT * FROM ra_workcenters");
     if (allWorkcenters.rowCount > 0) {
+      console.log(allWorkcenters.rows);
       res.status(200).json(allWorkcenters.rows);
+
     } else {
       res.status(404).json("No workcenters found");
     }
