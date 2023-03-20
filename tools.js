@@ -14,21 +14,21 @@ async function printOrder(id) {
   );
   console.log("printerDataxx", printerData.rows[0]);
 
-  const ipAddress = printerData.rows[0].printerIP;
-  const port = printerData.rows[0].printerPort;
-  const DPI = printerData.rows[0].printerDPI;
+  const ipAddress = printerData?.rows[0]?.printerIP;
+  const port = printerData?.rows[0]?.printerPort;
+  const DPI = printerData?.rows[0]?.printerDPI;
 
   const labelData = await query("SELECT * FROM ra_labels WHERE label = $1 ", [
     labelType,
   ]);
   const listOfLabels = content;
-  const labelWidth = labelData.rows[0].label_width;
-  const labelHeight = labelData.rows[0].label_height;
-  const ribbonWidth = labelData.rows[0].ribbon_width;
-  const fontSize = labelData.rows[0].font_size;
-  const x_0 = labelData.rows[0].label_x0;
-  const labelsInRow = labelData.rows[0].labels_in_row;
-  const linesOfText = labelData.rows[0].lines_of_text;
+  const labelWidth = labelData?.rows[0]?.label_width;
+  const labelHeight = labelData?.rows[0]?.label_height;
+  const ribbonWidth = labelData?.rows[0]?.ribbon_width;
+  const fontSize = labelData?.rows[0].font_size;
+  const x_0 = labelData?.rows[0]?.label_x0;
+  const labelsInRow = labelData?.rows[0]?.labels_in_row;
+  const linesOfText = labelData?.rows[0]?.lines_of_text;
   console.log(
     "linesOfText",
     linesOfText,

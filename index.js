@@ -26,6 +26,9 @@ app.get("/orders", async (req, res) => {
     } else {
       res.status(404).json("No orders found");
     }
+
+
+
   } catch (err) {
     console.error("Error: ", err.message);
   }
@@ -40,6 +43,9 @@ app.post("/orders", async (req, res) => {
       labelType,
       orderNumber,
       orderType,
+
+
+
       user,
       content,
       workcenter,
@@ -57,11 +63,15 @@ app.post("/orders", async (req, res) => {
       content,
       workcenter,
     ];
-    const newOrder = await query(text, values);
+    const newOrder = await query(text, values)
     res.json(newOrder.rows[0]);
   } catch (err) {
     console.error(err.stack);
-    res.status(500).json("Error: " + err.message);
+
+
+
+
+                res.status(500).json("Error: " + err.message);
   }
 });
 
@@ -89,8 +99,12 @@ app.post("/users", async (req, res) => {
   try {
     const { username, name, surname } = req.body;
     const newUser = await query(
+
+
+
+
       "INSERT INTO ra_users (username, name, surname) VALUES ($1, $2, $3) RETURNING *",
-      [username, name, surname]
+                [username, name, surname]
     );
     res.json(newUser.rows[0]);
   } catch (err) {
