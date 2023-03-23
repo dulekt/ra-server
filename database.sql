@@ -3,9 +3,9 @@ database.sql
 password: postgres
 username: postgres
 (psql -h hostname -d databasename -U username -f filepath.sql)
-psql -U postgres  -d ra -f C:\Visual_code_projects\ra-server\database.sql
+psql -U postgres  -d ra -f C:\VSC_projects\ra-server\database.sql
 \c ra => to connect to database
-\dt => to list all tables 
+\dt => to list all tables
 \d table_name => to list table structure
 testtest
 */
@@ -23,7 +23,7 @@ CREATE TABLE  ra_users (
 /* POST/GET done*/
 CREATE TABLE orders (
     "id" SERIAL PRIMARY KEY,
-    "isPrinted" boolean NOT NULL DEFAULT false, 
+    "isPrinted" boolean NOT NULL DEFAULT false,
     "datetime" timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "category" text,
     "description" text,
@@ -37,7 +37,7 @@ CREATE TABLE orders (
 );
 
 
-/* POST/GET/DELETE done*/ 
+/* POST/GET/DELETE done*/
 CREATE TABLE   ra_labels (
 
     "labelID" SERIAL PRIMARY KEY,
