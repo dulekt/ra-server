@@ -181,7 +181,7 @@ function prepareZPL(
     return acc;
   }, []);
 
-  const labelsZPL = groupedLabels.map(
+  const labelsZPL = groupedLabels?.map(
     (group) =>
       beginLabelDefinition +
       group
