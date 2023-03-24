@@ -3,7 +3,7 @@ database.sql
 password: postgres
 username: postgres
 (psql -h hostname -d databasename -U username -f filepath.sql)
-psql -U postgres  -d ra -f C:\VSC_projects\ra-server\database.sql
+psql -U postgres  -d ra -f C:\System_zamawiania_etykiet\ra-server\database.sql
 \c ra => to connect to database
 \dt => to list all tables
 \d table_name => to list table structure

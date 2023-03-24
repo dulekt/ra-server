@@ -25,7 +25,7 @@ async function printOrder(id) {
   const labelWidth = labelData?.rows[0]?.label_width;
   const labelHeight = labelData?.rows[0]?.label_height;
   const ribbonWidth = labelData?.rows[0]?.ribbon_width;
-  const fontSize = labelData?.rows[0].font_size;
+  const fontSize = labelData?.rows[0]?.font_size;
   const x_0 = labelData?.rows[0]?.label_x0;
   const labelsInRow = labelData?.rows[0]?.labels_in_row;
   const linesOfText = labelData?.rows[0]?.lines_of_text;
@@ -96,7 +96,7 @@ async function getPrinterCellPrinter(labelType) {
     labelType,
   ]);
   //console.log("getPrinterCellPrinter", printer.rows[0].print_cell_printer);
-  return printer.rows[0].print_cell_printer;
+  return printer?.rows[0]?.print_cell_printer;
 }
 
 function preparePrintPayload(listOfLabels) {
@@ -174,7 +174,7 @@ function prepareZPL(
   //const x0 = ribbonWidthInDots / (labelsInRow * 2) - labelWidthInDots / 2;
 
   // labels divided in groups of n where n is number of labels in row
-  const groupedLabels = listOfLabels.reduce((acc, item, index, array) => {
+  const groupedLabels = listOfLabels?.reduce((acc, item, index, array) => {
     if (index % labelsInRow === 0) {
       acc.push(array.slice(index, index + labelsInRow));
     }
