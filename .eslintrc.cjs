@@ -20,6 +20,9 @@ module.exports = {
         node: true,
         es6: true,
     },
+    parserOptions: {
+        ecmaVersion: 2020,
+    },
     globals: {
         sessionStorage: true,
         localStorage: false,
