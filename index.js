@@ -21,7 +21,7 @@ app.get('/orders', async (req, res) => {
         console.log('get all orders');
 
         const allOrders = await query(
-            'SELECT * FROM orders WHERE "isPrinted" = false UNION SELECT * FROM orders WHERE "isPrinted" = true LIMIT 5'
+            '(SELECT * FROM orders WHERE "isPrinted" = false) UNION (SELECT * FROM orders WHERE "isPrinted" = true LIMIT 5)'
         );
 
         if (allOrders.rowCount > 0) {
