@@ -10,10 +10,12 @@ app.use(cors());
 app.use(json());
 app.use(helmet());
 
+
 /// ROUTES ///
 
 //  get all orders from orders table
 app.get("/orders", async (req, res) => {
+
 
 
 
