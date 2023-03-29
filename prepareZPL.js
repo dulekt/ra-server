@@ -94,7 +94,7 @@ function prepareZPL(
 
           const y = Math.round((labelHeightInDots - fontSizeInDots) / 4); // y position of label
           console.log(index, x, y);
-          return `\n^FO${x},${y} ^FB${labelWidthInDots},${linesOfText},0,C\n^FD${label}\\&^FS`;
+          return `\n^FO${x},${y} ^FB${labelWidthInDots},${PN},0,C\n^FD${label}\\&^FS`;
         })
         .join("") +
       endLabelDefinition
