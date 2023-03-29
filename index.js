@@ -20,8 +20,8 @@ app.get("/orders", async (req, res) => {
 
   try {
     console.log("get all orders");
-    const allOrders = await query("SELECT * FROM orders WHERE isPrinted = false OR (isPrinted = true AND id > (SELECT MAX(id) - 5 FROM orders))");
 
+    const allOrders = await query('SELECT * FROM orders WHERE "isPrinted" JOIN (SELECT MAX(id) - 10 FROM orders)');
 
     if (allOrders.rowCount > 0) {
       res.status(200).json(allOrders.rows);
