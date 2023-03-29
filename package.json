@@ -4,8 +4,8 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "lint": "eslint --ext .js,.jsx,.ts,.tsx --debug",
-        "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx  --fix --debug"
+        "lint": "eslint . --ext .js,.jsx,.ts,.tsx --debug",
+        "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx  --fix --debug"
     },
     "author": "",
     "license": "ISC",
