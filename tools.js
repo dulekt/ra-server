@@ -3,6 +3,10 @@ const net = require('net');
 const { query } = require('./db');
 
 const client = new net.Socket();
+module.exports = {
+    printOrder,
+    printToZebra,
+};
 
 async function printOrder(id) {
     const { labelType, order_type, content } = await fetchOrder(id);
@@ -28,27 +32,6 @@ async function printOrder(id) {
     const x_0 = labelData?.rows[0]?.label_x0;
     const labelsInRow = labelData?.rows[0]?.labels_in_row;
     const linesOfText = labelData?.rows[0]?.lines_of_text;
-    console.log(
-        'linesOfText',
-        linesOfText,
-        '\nlabelsInRow',
-        labelsInRow,
-        '\nlabelWidth',
-        labelWidth,
-        '\nlabelHeight',
-        labelHeight,
-        '\nribbonWidth',
-        ribbonWidth,
-        '\nfontSize',
-        fontSize,
-        '\nDPI',
-        DPI,
-        '\nx_0',
-        x_0,
-        '\nlistOfLabels',
-        listOfLabels
-    );
-
     const zpl = prepareZPL(
         listOfLabels,
         ribbonWidth,
@@ -75,11 +58,6 @@ function printToZebra(ipAddress, port = 9100, zpl) {
         client.destroy();
     });
 }
-
-module.exports = {
-    printOrder,
-    printToZebra,
-};
 
 async function fetchOrder(id) {
     const order = await query('SELECT * FROM orders WHERE id = $1', [id]);

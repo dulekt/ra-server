@@ -3,16 +3,14 @@ const express = require('express');
 const { json } = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
-const { query } = require('./db');
 
-const { printOrder } = require('./tools');
+const { query } = require('./db');
+const { printOrder } = require('./utils/printOrder');
 
 const app = express();
 app.use(cors());
 
 app.use(json());
-
-
 
 app.use(helmet());
 /// ROUTES ///
@@ -23,7 +21,9 @@ app.get('/orders', async (req, res) => {
         console.log('get all orders');
 
         const allOrders = await query(
-            '(SELECT * FROM orders WHERE "isPrinted" = false) UNION (SELECT * FROM orders WHERE "isPrinted" = true ORDER BY datetime DESC  LIMIT 5)'
+            '(SELECT * FROM orders WHERE "isPrinted" = false)' +
+                ' UNION' +
+                ' (SELECT * FROM orders WHERE "isPrinted" = true ORDER BY datetime DESC  LIMIT 5)'
         );
 
         if (allOrders.rowCount > 0) {
@@ -39,17 +39,7 @@ app.get('/orders', async (req, res) => {
 //  add order to orders table
 app.post('/orders', async (req, res) => {
     try {
-        const {
-            category,
-            description,
-            labelType,
-            orderNumber,
-            orderType,
-
-            user,
-            content,
-            workcenter,
-        } = req.body;
+        const { category, description, labelType, orderNumber, orderType, user, content, workcenter } = req.body;
 
         const text =
             'INSERT INTO orders ("category", "description", "labelType", "order_number", "order_type", "user", "content","workcenter")' +
