@@ -6,15 +6,18 @@ module.exports = {
 };
 
 function printToZebra(ipAddress, port, zpl) {
-    client.connect(port, ipAddress, () => {
-        client.write(zpl);
+    try {
+        client.connect(port, ipAddress, () => {
+            client.write(zpl);
 
-        client.destroy();
-    });
+            client.destroy();
+        });
+    } catch (error) {
+        console.log('error: ', error);
+    }
 }
 
-const zpl =
-    '^XA^CFF,50^XA^FO18,18 ^FB203,0,1,C^FD1234&^FS^FO259,8 ^FB203,0,1,C^FD1234567&^FS^FO510,8 ^FB203,0,1,C^FD123456&^FS ^XZ^XA  ^FD  ^XZ ^LL';
+const zpl = '^XA^CFE,350^XA^FO12,20^FB300,0,1,C^FD-SE^FS^FO345,20^FB300,0,1,C^FD-SE^FS^XZ';
 
 const port = 9100;
 const ipAddress = '10.76.13.150';

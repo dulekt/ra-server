@@ -8,30 +8,29 @@ function prepareZPL(
     labelWidth,
     labelHeight,
     DPI = 203,
-    fontSize = 12,
+    fontSize = 14,
     labelsInRow = 1,
     x_0 = 0,
     x_n = 0,
     linesOfText = 1
 ) {
-    // console log parameteres
     const ribbonWidthInDots = Math.round((ribbonWidth * DPI) / 25.4);
-    x_0 = Math.round((x_0 * DPI) / 25.4);
+    const x_0inDPI = Math.round((x_0 * DPI) / 25.4);
 
-    x_n = Math.round((x_n * DPI) / 25.4);
+    const x_nInDPI = Math.round((x_n * DPI) / 25.4);
 
     console.log('x_0, x_n: ', x_0, x_n);
 
     const beginLabelDefinition = '\n^XA';
     const endLabelDefinition = ' ^XZ';
-    const mode = '\n^XA\n^MMC\n^XZ';
+    const cut = '^XA^MMC^XZ';
     const labelWidthInDots = Math.round((labelWidth * DPI) / 25.4);
     const labelHeightInDots = Math.round((labelHeight * DPI) / 25.4);
 
-    // ?const fontSizeInDots = Math.round((fontSize * DPI) / 72);
-    const fontSizeInDots = Math.round((fontSize * DPI) / 96);
+    const fontSizeInDots = Math.round((fontSize * DPI) / 72);
+    // ?const fontSizeInDots = Math.round((fontSize * DPI) / 96);
 
-    const fontZPL = `\n^CFF,${fontSizeInDots}`;
+    const fontZPL = `\n^CFE,${fontSizeInDots}`;
     // ?  x position of 1. label left edge
     // const x0 = ribbonWidthInDots / (labelsInRow * 2) - labelWidthInDots / 2;
     // labels divided in groups of n where n is number of labels in row
@@ -48,41 +47,31 @@ function prepareZPL(
             beginLabelDefinition +
             group
                 .map((label, index) => {
-                    const x = Math.round(x_0 + (index * (ribbonWidthInDots - x_0 - x_n)) / labelsInRow); // x position of label
+                    const x = Math.round(x_0inDPI + (index * (ribbonWidthInDots - x_0inDPI - x_nInDPI)) / labelsInRow); // x position of label
 
                     const y = Math.round((labelHeightInDots - fontSizeInDots) / 4); // y position of label
                     console.log('index,x,y  ', index, x, y);
 
-                    return `\n^FO${x},${y} ^FB${labelWidthInDots},${linesOfText},1,C\n^FD${label}\\&^FS`;
+                    return `^FO${x},${y}^FB${labelWidthInDots},${linesOfText},1,C^FD${label}^FS`;
                 })
                 .join('') +
             endLabelDefinition
     );
 
-    return beginLabelDefinition + fontZPL + labelsZPL + mode;
+    return beginLabelDefinition + fontZPL + labelsZPL + cut;
 }
 
 console.log(
     prepareZPL(
-        (listOfLabels = [
-            '1234',
-            '1234567',
-            '12345678901234',
-            '1234',
-            '1234567',
-            '12345678901234',
-            '1234',
-            '1234567',
-            '12345678901234',
-        ]),
-        (ribbonWidth = 95.2),
+        (listOfLabels = ['-SE', '-SE', '-SE']),
+        (ribbonWidth = 95),
         (labelWidth = 25.4),
-        (labelHeight = 7.16),
-        (DPI = 203),
-        (fontSize = 12),
+        (labelHeight = 9.5),
+        (DPI = 300),
+        (fontSize = 8),
         (labelsInRow = 3),
         (linesOfText = 1),
-        (x_0 = 0),
+        (x_0 = 9.5),
         (x_n = 0),
         (linesOfText = 1)
     )
