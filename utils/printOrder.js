@@ -43,6 +43,6 @@ async function printOrder(id) {
         }
     } else {
         const updateOrderTrue = await query('UPDATE orders SET "isPrinted" = true WHERE id = $1', [id]);
-        console.log('Not a label order');
+        console.log('Pulsar zrobiony, dzieki mateusz');
     }
 }
