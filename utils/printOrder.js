@@ -42,7 +42,7 @@ async function printOrder(id) {
             console.log('no label data');
         }
     } else {
-        const updateOrder = await query('UPDATE orders SET "isPrinted" = true WHERE id = $1', [id]);
+        const updateOrderTrue = await query('UPDATE orders SET "isPrinted" = true WHERE id = $1', [id]);
         console.log('Not a label order');
     }
 }
