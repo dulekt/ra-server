@@ -23,11 +23,9 @@ app.get('/orders', async (req, res) => {
         const allOrders = await query(
             '(SELECT * FROM orders WHERE "isPrinted" = false)' +
                 ' UNION' +
-                ' (SELECT * FROM orders WHERE (("isPrinted" = true) AND (NOT "user"="DRelic") '  +
-                ' ORDER BY datetime DESC  LIMIT 5)'
+                ' (SELECT * FROM orders WHERE "isPrinted" = true ORDER BY datetime DESC  LIMIT 10)'
         );
-sql query where "user" is not "DRelic"
-'select * from orders where "user" != 'DRelic
+
         if (allOrders.rowCount > 0) {
             res.status(200).json(allOrders.rows);
         } else {
@@ -50,10 +48,12 @@ app.post('/orders', async (req, res) => {
         const values = [category, description, labelType, orderNumber, orderType, user, content, workcenter];
         const newOrder = await query(text, values);
         res.json(newOrder.rows[0]);
+        console.log('new order added');
     } catch (err) {
         console.error(err.stack);
 
         res.status(500).json(`Error: ${err.message}`);
+
     }
 });
 
