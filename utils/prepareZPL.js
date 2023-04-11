@@ -46,7 +46,7 @@ function prepareZPL(
     const fontZPL = `\n^CFE,${fontSizeInDots}`;
     const beginLabelDefinition = `\n^XA${fontZPL}`;
     const endLabelDefinition = ' ^XZ';
-    const cut = '^XA^MMC^XZ';
+    const cut = '^XA^XZ'; //! add ^MMC later with condition!
     const labelWidthInDots = Math.round((labelWidth * DPI) / 25.4);
     const labelHeightInDots = Math.round((labelHeight * DPI) / 25.4);
     // ?  x position of 1. label left edge
