@@ -14,23 +14,41 @@ function prepareZPL(
     x_n = 0,
     linesOfText = 1
 ) {
+    // console log all input values for debugging
+    console.log(
+        'listOfLabels',
+        listOfLabels,
+        'ribbonWidth',
+        ribbonWidth,
+        'labelWidth',
+        labelWidth,
+        '\nlabelHeight',
+        labelHeight,
+        'DPI',
+        DPI,
+        'fontSize',
+        fontSize,
+        '\nlabelsInRow',
+        labelsInRow,
+        'x_0',
+        x_0,
+        'x_n',
+        x_n,
+        '\nlinesOfText',
+        linesOfText
+    );
+
     const ribbonWidthInDots = Math.round((ribbonWidth * DPI) / 25.4);
     const x_0inDPI = Math.round((x_0 * DPI) / 25.4);
-
     const x_nInDPI = Math.round((x_n * DPI) / 25.4);
-
-    console.log('x_0, x_n: ', x_0, x_n);
-
-    const beginLabelDefinition = '\n^XA';
+    const fontSizeInDots = Math.round((fontSize * DPI) / 72);
+    // ?const fontSizeInDots = Math.round((fontSize * DPI) / 96);
+    const fontZPL = `\n^CFE,${fontSizeInDots}`;
+    const beginLabelDefinition = `\n^XA${fontZPL}`;
     const endLabelDefinition = ' ^XZ';
     const cut = '^XA^MMC^XZ';
     const labelWidthInDots = Math.round((labelWidth * DPI) / 25.4);
     const labelHeightInDots = Math.round((labelHeight * DPI) / 25.4);
-
-    const fontSizeInDots = Math.round((fontSize * DPI) / 72);
-    // ?const fontSizeInDots = Math.round((fontSize * DPI) / 96);
-
-    const fontZPL = `\n^CFE,${fontSizeInDots}`;
     // ?  x position of 1. label left edge
     // const x0 = ribbonWidthInDots / (labelsInRow * 2) - labelWidthInDots / 2;
     // labels divided in groups of n where n is number of labels in row
@@ -50,9 +68,8 @@ function prepareZPL(
                     const x = Math.round(x_0inDPI + (index * (ribbonWidthInDots - x_0inDPI - x_nInDPI)) / labelsInRow); // x position of label
 
                     const y = Math.round((labelHeightInDots - fontSizeInDots) / 4); // y position of label
-                    console.log('index,x,y  ', index, x, y);
 
-                    return `^FO${x},${y}^FB${labelWidthInDots},${linesOfText},1,C^FD${label}^FS`;
+                    return `\n^FO${x},${y}^FB${labelWidthInDots},${linesOfText},1,C^FD${label}^FS`;
                 })
                 .join('') +
             endLabelDefinition
@@ -67,7 +84,7 @@ console.log(
         (ribbonWidth = 95),
         (labelWidth = 25.4),
         (labelHeight = 9.5),
-        (DPI = 300),
+        (DPI = 203),
         (fontSize = 8),
         (labelsInRow = 3),
         (linesOfText = 1),

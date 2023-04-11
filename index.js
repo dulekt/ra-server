@@ -6,6 +6,7 @@ const helmet = require('helmet');
 
 const { query } = require('./db');
 const { printOrder } = require('./utils/printOrder');
+const { updateIsPrinted } = require('./utils/updateIsPrinted');
 
 const app = express();
 app.use(cors());
@@ -349,6 +350,15 @@ app.post('/print_cell/:id', async (req, res) => {
         printOrder(id);
 
         res.json('Printed');
+    } catch (err) {
+        console.error('Error: ', err.message);
+    }
+});
+
+app.post('/update_is_printed/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        updateIsPrinted(id);
     } catch (err) {
         console.error('Error: ', err.message);
     }
