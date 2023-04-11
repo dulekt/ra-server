@@ -24,8 +24,7 @@ app.get('/orders', async (req, res) => {
         const allOrders = await query(
             '(SELECT * FROM orders WHERE "isPrinted" = false)' +
                 ' UNION' +
-                ' (SELECT * FROM orders WHERE (("isPrinted" = true) AND (NOT "user"="DRelic"))) ' +
-                ' ORDER BY datetime DESC  LIMIT 5)'
+                ' (SELECT * FROM orders WHERE "isPrinted" = true ORDER BY datetime DESC  LIMIT 5)'
         );
 
         if (allOrders.rowCount > 0) {
