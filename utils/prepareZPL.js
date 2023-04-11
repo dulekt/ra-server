@@ -78,7 +78,8 @@ function prepareZPL(
     return beginLabelDefinition + fontZPL + labelsZPL + cut;
 }
 
-console.log(
+{
+    /* console.log(
     prepareZPL(
         (listOfLabels = ['-SE', '-SE', '-SE']),
         (ribbonWidth = 95),
@@ -92,7 +93,8 @@ console.log(
         (x_n = 0),
         (linesOfText = 1)
     )
-);
+    ); */
+}
 //! test param label 80006-269-04,
 /* parameters:
 listOfLabels = ["1234", "1234567", "12345678901234"],
