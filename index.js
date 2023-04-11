@@ -49,6 +49,7 @@ app.post('/orders', async (req, res) => {
         const values = [category, description, labelType, orderNumber, orderType, user, content, workcenter];
         const newOrder = await query(text, values);
         res.json(newOrder.rows[0]);
+
         console.log('new order added by the user: ', user);
     } catch (err) {
         console.error(err.stack);

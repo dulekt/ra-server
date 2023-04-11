@@ -10,9 +10,9 @@ function prepareZPL(
     DPI = 203,
     fontSize = 14,
     labelsInRow = 1,
-    x_0 = 0,
-    x_n = 0,
-    linesOfText = 1
+    x_0 = 1,
+    linesOfText = 1,
+    x_n = 0
 ) {
     // console log all input values for debugging
     console.log(
