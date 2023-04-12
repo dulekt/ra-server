@@ -24,11 +24,14 @@ app.get('/orders', async (req, res) => {
         const allOrders = await query(
             '(SELECT * FROM orders WHERE "isPrinted" = false)' +
                 ' UNION' +
-                ' (SELECT * FROM orders WHERE "isPrinted" = true ORDER BY datetime DESC  LIMIT 5)'
+                ' (SELECT * FROM orders WHERE "isPrinted" = true  ORDER BY datetime DESC  LIMIT 30)'
         );
+ 
+        const filteredOrders = allOrders.rows.filter((order) => order.user !== 'DRelic' || order.isPrinted === false);
+  
 
-        if (allOrders.rowCount > 0) {
-            res.status(200).json(allOrders.rows);
+        if (filteredOrders.length > 0) {
+            res.status(200).json(filteredOrders);
         } else {
             res.status(404).json('No orders found');
         }
