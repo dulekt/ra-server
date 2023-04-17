@@ -37,7 +37,15 @@ async function printOrder(id) {
             );
 
             const updateOrder = await query('UPDATE orders SET "isPrinted" = true WHERE id = $1', [id]);
-            printToZebra(ipAddress, port, zpl);
+            try {
+                await printToZebra(ipAddress, port, zpl);
+            } catch (err) {
+                console.log(':::::::::printing_error:::::::::::');
+
+                console.log(err);
+
+                console.log(':::::::::::::::::::');
+            }
         } else {
             console.log('no label data');
         }
