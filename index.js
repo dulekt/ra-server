@@ -26,10 +26,8 @@ app.get('/orders', async (req, res) => {
                 ' UNION' +
                 ' (SELECT * FROM orders WHERE "isPrinted" = true  ORDER BY datetime DESC  LIMIT 30)'
         );
- 
-        const filteredOrders = allOrders.rows.filter((order) => order.user !== 'DRelic' || order.isPrinted === false);
-  
 
+        const filteredOrders = allOrders.rows.filter(order => order.user !== 'DRelic' || order.isPrinted === false);
         if (filteredOrders.length > 0) {
             res.status(200).json(filteredOrders);
         } else {
@@ -363,6 +361,31 @@ app.post('/update_is_printed/:id', async (req, res) => {
     try {
         const { id } = req.params;
         updateIsPrinted(id);
+    } catch (err) {
+        console.error('Error: ', err.message);
+    }
+});
+
+app.post('design_review/', async (req, res) => {
+    try {
+        const { project, item, vc_list } = req.body;
+        const newDesignReview = await query(
+            'INSERT INTO ra_design_review ("project", "item", "vc_list") VALUES ($1, $2, $3) RETURNING *',
+            [project, item, vc_list]
+        );
+    } catch (err) {
+        console.error('Error: ', err.message);
+    }
+});
+
+app.get('/design_review', async (req, res) => {
+    try {
+        const allDesignReviews = await query('SELECT * FROM ra_design_review');
+        if (allDesignReviews.rowCount > 0) {
+            res.status(200).json(allDesignReviews.rows);
+        } else {
+            res.status(404).json('No design reviews found');
+        }
     } catch (err) {
         console.error('Error: ', err.message);
     }
