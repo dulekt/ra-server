@@ -82,5 +82,5 @@ CREATE TABLE ra_design_reviews (
     "datetime" timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "project" text,
     "item" text,
-    "vc_list" text[],
-);
+    "vc_list" json,
+    );
