@@ -370,7 +370,7 @@ app.post('design_review/', async (req, res) => {
     try {
         const { project, item, vc_list } = req.body;
         const newDesignReview = await query(
-            'INSERT INTO ra_design_review ("project", "item", "vc_list") VALUES ($1, $2, $3) RETURNING *',
+            'INSERT INTO ra_design_reviews ("project", "item", "vc_list") VALUES ($1, $2, $3) RETURNING *',
             [project, item, vc_list]
         );
     } catch (err) {
@@ -380,7 +380,7 @@ app.post('design_review/', async (req, res) => {
 
 app.get('/design_review', async (req, res) => {
     try {
-        const allDesignReviews = await query('SELECT * FROM ra_design_review');
+        const allDesignReviews = await query('SELECT * FROM ra_design_reviews');
         if (allDesignReviews.rowCount > 0) {
             res.status(200).json(allDesignReviews.rows);
         } else {
