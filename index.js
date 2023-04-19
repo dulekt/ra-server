@@ -366,19 +366,24 @@ app.post('/update_is_printed/:id', async (req, res) => {
     }
 });
 
-app.post('design_review/', async (req, res) => {
+app.post('/design_reviews', async (req, res) => {
     try {
         const { project, item, vc_list } = req.body;
         const newDesignReview = await query(
             'INSERT INTO ra_design_reviews ("project", "item", "vc_list") VALUES ($1, $2, $3) RETURNING *',
             [project, item, vc_list]
         );
+        res.json('New design review added');
+        console.log(newDesignReview.rows[0]);
     } catch (err) {
         console.error('Error: ', err.message);
+
+
     }
 });
 
-app.get('/design_review', async (req, res) => {
+app.get('/design_reviews', async (req, res) => {
+    console.log('get all design reviews');
     try {
         const allDesignReviews = await query('SELECT * FROM ra_design_reviews');
         if (allDesignReviews.rowCount > 0) {
