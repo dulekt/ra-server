@@ -80,7 +80,9 @@ CREATE TABLE  ra_workcenters (
 CREATE TABLE ra_design_reviews (
     "id" SERIAL PRIMARY KEY,
     "datetime" timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "project" text,
+    "order" text,
     "item" text,
-    "vc_list" text[],
-    );
+    "data" jsonb
+
+);
+

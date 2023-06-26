@@ -368,19 +368,19 @@ app.post('/update_is_printed/:id', async (req, res) => {
 
 app.post('/design_reviews', async (req, res) => {
     try {
-        const { project, item, vc_list } = req.body;
+        const { order, item, data } = req.body;
+        //post project, item and data to database considering that data is jsonb
         const newDesignReview = await query(
-            'INSERT INTO ra_design_reviews ("project", "item", "vc_list") VALUES ($1, $2, $3) RETURNING *',
-            [project, item, vc_list]
+            'INSERT INTO ra_design_reviews ("order", "item", "data") VALUES ($1, $2, $3) RETURNING *',
+            [order, item, data]
         );
 
-        res.json('New design review added');
-
-        console.log(newDesignReview.rows[0]);
+        res.json(newDesignReview.rows[0]);
     } catch (err) {
         console.error('Error: ', err.message);
     }
 });
+
 
 app.get('/design_reviews', async (req, res) => {
     console.log('get all design reviews');
@@ -396,6 +396,7 @@ app.get('/design_reviews', async (req, res) => {
         console.error('Error: ', err.message);
     }
 });
+
 
 app.listen(5000, () => {
     console.log('Server is running on port 5000');
